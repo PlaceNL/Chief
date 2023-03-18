@@ -1,0 +1,14 @@
+{
+  "name": "Chief",
+  "version": "0.0.0",
+  "description": "Command & Control server for our ventures on r/Place ",
+  "main": "src/index.js",
+  "repository": "https://github.com/PlaceNL/Chief.git",
+  "license": "GPLv3",
+  "private": true,
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-ws": "^5.0.2"
+  },
+  "type": "module"
+}
