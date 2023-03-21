@@ -5,6 +5,7 @@ import {handlePong, startKeepaliveCheck} from './handler/pong.js';
 import {handleGetSubscriptions, handleSubscribe, handleUnsubscribe} from './handler/subscriptions.js';
 import {handleBrand} from './handler/brand.js';
 import {startStatsInterval} from './util/statsUtil.js';
+import {handleDisableCapability, handleEnableCapability, handleGetCapabilities} from './handler/capabilities.js';
 
 const {chief} = application;
 const router = new Router();
@@ -19,7 +20,8 @@ router.ws('/', (ws) => {
         id: crypto.randomUUID(),
         connectedAt: new Date(),
         lastKeepalive: new Date(),
-        subscriptions: {}
+        subscriptions: {},
+        capabilities: {}
     };
 
     attachSendFunctions(chief, ws);
@@ -71,6 +73,16 @@ router.ws('/', (ws) => {
                 handleBrand(client, payload);
                 break;
 
+            case 'getCapabilities':
+                handleGetCapabilities(client);
+                break;
+            case 'enableCapability':
+                handleEnableCapability(client, payload);
+                break;
+            case 'disableCapability':
+                handleDisableCapability(client, payload);
+                break;
+
             case 'getSubscriptions':
                 handleGetSubscriptions(client);
                 break;
@@ -93,7 +105,7 @@ router.ws('/', (ws) => {
     ws.sendPayload('hello', {
         id: client.id,
         keepaliveInterval: KEEPALIVE_INTERVAL,
-        keepAliveTimeout: KEEPALIVE_TIMEOUT
+        keepaliveTimeout: KEEPALIVE_TIMEOUT
     });
 });
 

@@ -1,3 +1,5 @@
+import {ALLOWED_CAPABILITIES} from '../handler/capabilities.js';
+
 export function gatherStats(chief, complex) {
     const stats = {
         ...chief.stats,
@@ -24,6 +26,18 @@ export function gatherStats(chief, complex) {
         }
         stats.brands = brands;
     }
+
+    const capabilities = {};
+    for (const capability of ALLOWED_CAPABILITIES) {
+        capabilities[capability] = 0;
+    }
+    for (const client of chief.clients.values()) {
+        for (const [capability, value] of Object.entries(client.capabilities)) {
+            if (!value) continue;
+            capabilities[capability]++;
+        }
+    }
+    stats.capabilities = capabilities;
 
     return stats;
 }
