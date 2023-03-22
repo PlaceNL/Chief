@@ -7,37 +7,10 @@ export function gatherStats(chief, complex) {
     };
 
     if (complex) {
-        const brands = {};
-        for (const {brand} of chief.clients.values()) {
-            if (!brand) continue;
-
-            let author = brands[brand.author];
-            if (!author) {
-                brands[brand.author] = author = {};
-            }
-
-            let name = author[brand.name];
-            if (!name) {
-                author[brand.name] = name = {};
-            }
-
-            let version = brand.version ?? 'default';
-            name[version] = (name[version] ?? 0) + 1;
-        }
-        stats.brands = brands;
+        stats.brands = gatherBrandsStats(chief);
     }
 
-    const capabilities = {};
-    for (const capability of ALLOWED_CAPABILITIES) {
-        capabilities[capability] = 0;
-    }
-    for (const client of chief.clients.values()) {
-        for (const [capability, value] of Object.entries(client.capabilities)) {
-            if (!value) continue;
-            capabilities[capability]++;
-        }
-    }
-    stats.capabilities = capabilities;
+    stats.capabilities = gatherCapabilitiesStats(chief);
 
     return stats;
 }
@@ -52,4 +25,41 @@ export function startStatsInterval(chief, INTERVAL) {
             client.ws.sendPayload('stats', stats);
         }
     }, INTERVAL);
+}
+
+export function gatherBrandsStats(chief) {
+    const brands = {};
+    for (const {brand} of chief.clients.values()) {
+        if (!brand) continue;
+
+        let author = brands[brand.author];
+        if (!author) {
+            brands[brand.author] = author = {};
+        }
+
+        let name = author[brand.name];
+        if (!name) {
+            author[brand.name] = name = {};
+        }
+
+        let version = brand.version ?? 'default';
+        name[version] = (name[version] ?? 0) + 1;
+    }
+
+    return brands;
+}
+
+export function gatherCapabilitiesStats(chief) {
+    const capabilities = {};
+    for (const capability of ALLOWED_CAPABILITIES) {
+        capabilities[capability] = 0;
+    }
+    for (const client of chief.clients.values()) {
+        for (const [capability, value] of Object.entries(client.capabilities)) {
+            if (!value) continue;
+            capabilities[capability]++;
+        }
+    }
+
+    return capabilities;
 }

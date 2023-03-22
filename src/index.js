@@ -13,6 +13,7 @@ express.application.chief = chief;
 
 expressWs(app);
 app.use('/api', (await import('./api/index.js')).default);
+app.use('/metrics', (await import('./metrics/index.js')).default);
 app.use('/ws', (await import('./ws/index.js')).default);
 
 const port = process.env.HTTP_PORT ?? 3000;
