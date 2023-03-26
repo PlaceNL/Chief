@@ -6,13 +6,12 @@ import {handleGetSubscriptions, handleSubscribe, handleUnsubscribe} from './hand
 import {handleBrand} from './handler/brand.js';
 import {startStatsInterval} from './util/statsUtil.js';
 import {handleDisableCapability, handleEnableCapability, handleGetCapabilities} from './handler/capabilities.js';
+import {handleGetOrder} from './handler/orders.js';
+import {KEEPALIVE_INTERVAL, KEEPALIVE_TIMEOUT, STATS_INTERVAL} from '../constants.js';
+import {handleGetStats} from './handler/stats.js';
 
 const {chief} = application;
 const router = new Router();
-
-const KEEPALIVE_INTERVAL = parseInt(process.env.KEEPALIVE_INTERVAL ?? 5000);
-const KEEPALIVE_TIMEOUT = parseInt(process.env.KEEPALIVE_TIMEOUT ?? 15000);
-const STATS_INTERVAL = parseInt(process.env.STATS_INTERVAL ?? 10000);
 
 router.ws('/', (ws) => {
     const client = {
@@ -71,6 +70,14 @@ router.ws('/', (ws) => {
 
             case 'brand':
                 handleBrand(client, payload);
+                break;
+
+            case 'getOrder':
+                handleGetOrder(chief, client);
+                break;
+
+            case 'getStats':
+                handleGetStats(chief, client);
                 break;
 
             case 'getCapabilities':

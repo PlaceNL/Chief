@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chief</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/themes/odometer-theme-default.min.css"
+          integrity="sha512-jHurNV8IL4Q4DRHzlRaIboSWZqnA3KU6KTiRQrtU+jxE1MHxdiveHrztuHhyna6PWTE427SxNDDUqjaruirB2A=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+</head>
+<body>
+<div class="container mt-3">
+    <div class="d-flex justify-content-center" id="spinner">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    <div id="content" class="d-none">
+        <div class="text-center">
+            <h1 id="connections" class="odometer fs-1 text-light">0</h1>
+            <h2 class="text-secondary">active connections</h2>
+            <h3 class="text-secondary">(<span id="place-capable" class="text-light">0</span> capable of placing pixels)
+            </h3>
+        </div>
+        <hr/>
+        <div id="order-history" class="ps-5 pe-5">
+            <div class="d-flex justify-content-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+        <a href="/artist" class="text-secondary">Artist interface</a>
+    </div>
+    <p class="text-center">Powered by <a href="https://github.com/PlaceNL/Chief" target="_blank" rel="noreferrer">Chief</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js"
+        integrity="sha512-51WDTV7haD9BBDc8RWH2r5TnuSiRyAqEnbGyuKHYn+qpYCrCckxFeqlr1I5UoOULijyLV2vnHO9LS4MrAzHxwQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    // yes, this is messy. no, I don't care.
+
+    let orderHistory = [];
+
+    class SocketClient {
+        ws;
+        id;
+        lastPing;
+        connectionTimeoutChecker;
+        keepaliveTimeout;
+        keepaliveCheckerInterval;
+        connected = false;
+
+        connect() {
+            document.querySelector('#content').classList.add('d-none');
+            document.querySelector('#spinner').classList.remove('d-none');
+            this.connected = false;
+            this.ws = new WebSocket(`${window.location.protocol === 'https:' ? 'wss://' : 'ws://'}${window.location.host}/ws`);
+
+            this.connectionTimeoutChecker = setTimeout(() => {
+                this.ws.close();
+            }, 10000); // open connection within 10sec
+
+            this.lastPing = new Date();
+            this.ws.onopen = () => {
+                clearTimeout(this.connectionTimeoutChecker);
+                document.querySelector('#spinner').classList.add('d-none');
+                document.querySelector('#content').classList.remove('d-none');
+
+                this.keepaliveCheckerInterval = setInterval(() => {
+                    if (!this.keepaliveTimeout) return;
+                    if (Date.now() - this.lastPing.getTime() <= this.keepaliveTimeout) return;
+
+                    this.ws.close();
+                }, 1000);
+            };
+
+            this.ws.onclose = () => {
+                clearInterval(this.keepaliveCheckerInterval);
+                this.connected = false;
+
+                setTimeout(() => {
+                    this.connect();
+                }, 2500);
+            };
+
+            this.ws.onerror = () => {
+                this.ws.close();
+            };
+
+            this.ws.onmessage = (msg) => {
+                const message = JSON.parse(msg.data);
+                const {type, payload} = message;
+
+                switch (type) {
+                    case 'error':
+                        console.warn('Got error: ', payload);
+                        break;
+
+                    case 'disconnect':
+                        console.warn('Disconnected by server!', payload);
+                        break;
+
+                    case 'hello':
+                        this.connected = true;
+                        this.id = payload.id;
+                        this.keepaliveTimeout = payload.keepaliveTimeout;
+
+                        this.subscribe('stats');
+                        this.subscribe('orders');
+
+                        this.sendPayload('brand', {
+                            author: 'PlaceNL',
+                            name: 'Chief-Web'
+                        });
+
+                        this.sendPayload('getStats');
+                        break;
+
+                    case 'order':
+                        orderHistory.unshift(payload);
+                        buildOrderHistory();
+                        break;
+
+                    case 'stats':
+                        document.querySelector('#connections').innerText = payload.activeConnections;
+                        document.querySelector('#place-capable').innerText = payload.capabilities.place;
+                        break;
+
+                    case 'ping':
+                        this.lastPing = new Date();
+                        this.sendPayload('pong');
+                        break;
+
+                    case 'brandUpdated':
+                    case 'capabilityEnabled':
+                    case 'capabilityDisabled':
+                    case 'subscribed':
+                    case 'unsubscribed':
+                        break;
+
+                    default:
+                        console.warn(`Unknown payload type '${type}'`);
+                        break;
+                }
+            };
+        }
+
+        sendPayload(type, payload) {
+            this.ws.send(JSON.stringify({
+                type,
+                payload
+            }));
+        }
+
+        subscribe(to) {
+            this.sendPayload('subscribe', to);
+        }
+
+        unsubscribe(from) {
+            this.sendPayload('unsubscribe', from);
+        }
+
+        enableCapability(capability) {
+            this.sendPayload('enableCapability', capability);
+        }
+
+        disableCapability(capability) {
+            this.sendPayload('disableCapability', capability);
+        }
+    }
+
+    function buildOrderHistory() {
+        let html = '';
+        for (const order of orderHistory) {
+            html += `<div class="card mb-2">
+  <img alt="Order" src="${cleanHTML(order.images.order)}" class="card-img-top" width="${order.size.width}">
+  <div class="card-body">
+    <hr/>
+    <p class="card-text">${order.message ? cleanHTML(order.message) : '<span class="text-secondary">no description provided</span>'}</p>
+    <a href="${cleanHTML(order.images.order)}" download class="btn btn-primary mt-1">Download image</a>
+    ${order.images.priority ? `<a href="${cleanHTML(order.images.order)}" download class="btn btn-secondary ml-1 mt-1">Download priority map</a>` : ''}
+    <div class="flex mt-2 text-secondary">
+      ${order.creator ? `<img alt="Avatar" src="${cleanHTML(order.creator.avatar)}" class="rounded" width="32" height="32"> ${cleanHTML(order.creator.name)}` : 'anonymous artist'}
+    </div>
+  </div>
+</div>`;
+        }
+        document.querySelector('#order-history').innerHTML = html;
+    }
+
+    (async function () {
+        const response = await fetch('/api/orders');
+        const orders = await response.json();
+        orderHistory.push(...orders);
+        buildOrderHistory();
+    })();
+
+    function cleanHTML(html) {
+        return html.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&amp;');
+    }
+
+    new SocketClient().connect();
+</script>
+</body>
+</html>

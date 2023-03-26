@@ -1,4 +1,4 @@
-const ALLOWED_SUBSCRIPTIONS = ['announcements', 'stats'];
+const ALLOWED_SUBSCRIPTIONS = ['announcements', 'orders', 'stats'];
 
 export function handleSubscribe(client, payload) {
     handleSub(client, payload, true);

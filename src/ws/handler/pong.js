@@ -7,7 +7,8 @@ export function startKeepaliveCheck(chief, INTERVAL, TIMEOUT) {
         for (const client of chief.clients.values()) {
             if (Date.now() - client.lastKeepalive.getTime() > TIMEOUT) {
                 client.ws.sendPayload('disconnect', {
-                    reason: 'timedOut'
+                    reason: 'timedOut',
+                    message: 'Connection timed out - client failed to respond to pings in time'
                 });
                 client.ws.close();
                 continue;

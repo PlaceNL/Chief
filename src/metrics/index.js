@@ -2,13 +2,14 @@ import {application, Router} from 'express';
 import * as client from 'prom-client';
 import {ALLOWED_CAPABILITIES} from '../ws/handler/capabilities.js';
 import {gatherBrandsStats, gatherCapabilitiesStats} from '../ws/util/statsUtil.js';
+import {COLLECT_NODE_METRICS} from '../constants.js';
 
 const {chief} = application;
 const router = new Router();
 
 const register = new client.Registry();
 
-if (Boolean(process.env.NODE_METRICS ?? false)) client.collectDefaultMetrics({register});
+if (Boolean(COLLECT_NODE_METRICS)) client.collectDefaultMetrics({register});
 register.registerMetric(new client.Counter({
     name: 'websocket_messages_in_total',
     help: 'The amount of messages sent to the websocket server on this instance',
