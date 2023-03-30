@@ -11,3 +11,5 @@ If you're interested in creating a client, check out the [developer docs](docs/R
 We welcome contributions from anyone, as long as they're meaningful changes.
 If you're making large changes, we recommend discussing them in the English development channels in
 [our Discord server](https://l.placenl.nl/discord) first.
+
+Please make sure to update the documentation when making protocol changes.

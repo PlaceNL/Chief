@@ -154,7 +154,8 @@ router.post('/order', upload.fields([{
         images: {
             order: `${BASE_URL}/orders/${id}.png`,
             priority: req.files.priority ? `${BASE_URL}/orders/${id}-priority.png` : null
-        }
+        },
+        createdAt: new Date()
     };
 
     for (const client of chief.clients.values()) {

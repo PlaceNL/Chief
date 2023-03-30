@@ -28,5 +28,5 @@ export function handleGetSubscriptions(client) {
         subscriptions[subscription] = !!client.subscriptions[subscription];
     }
 
-    client.ws.sendPayload('subscriptions', subscriptions);
+    client.ws.sendPayload('subscriptions', {allowed: ALLOWED_SUBSCRIPTIONS, client: subscriptions});
 }

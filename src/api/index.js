@@ -32,6 +32,9 @@ router.get('/orders', async (req, res) => {
             width: order.width
         };
 
+        order.createdAt = order.created_at;
+
+        delete order.created_at;
         delete order.created_by;
         delete order.flags; // implementation detail
         delete order.height;

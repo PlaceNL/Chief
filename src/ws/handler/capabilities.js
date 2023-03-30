@@ -1,4 +1,4 @@
-export const ALLOWED_CAPABILITIES = ['place', 'placeNow'];
+export const ALLOWED_CAPABILITIES = ['place', 'placeNow', 'priorityMappings'];
 
 export function handleEnableCapability(client, payload) {
     handleCapability(client, payload, true);
@@ -28,5 +28,5 @@ export function handleGetCapabilities(client) {
         capabilities[subscription] = !!client.capabilities[subscription];
     }
 
-    client.ws.sendPayload('capabilities', capabilities);
+    client.ws.sendPayload('capabilities', {allowed: ALLOWED_CAPABILITIES, client: capabilities});
 }

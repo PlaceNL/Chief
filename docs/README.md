@@ -7,6 +7,9 @@ in the English development channels in [our Discord server](https://l.placenl.nl
 ### Creating a client
 
 - [The communication protocol](client/PROTOCOL.md)
+- [Capabilities](client/CAPABILITIES.md)
+- [Subscriptions](client/SUBSCRIPTIONS.md)
+- (Optional) [Priority mappings](client/PRIORITY-MAPPINGS.md)
 
 ### REST API
 
