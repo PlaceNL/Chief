@@ -45,6 +45,10 @@ app.use('/oauth/login', (req, res) => {
 });
 app.use('/ws', (await import('./ws/index.js')).default);
 
+app.use('/orders', (req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    next();
+});
 app.use('/orders', express.static(IMAGES_DIRECTORY));
 app.use('/', express.static('./web'))
 
