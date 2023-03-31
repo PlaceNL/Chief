@@ -3,7 +3,7 @@ import {ALLOWED_CAPABILITIES} from '../handler/capabilities.js';
 export function gatherStats(chief, complex) {
     const stats = {
         ...chief.stats,
-        date: new Date(),
+        date: Date.now(),
         activeConnections: chief.clients.size
     };
 
