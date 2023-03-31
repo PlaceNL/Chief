@@ -25,10 +25,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Extract metadata (tags, labels) for Docker
-          id: meta
-          uses: docker/metadata-action@v4
-          with:
-            images: ghcr.io/placenl
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/placenl
       - name: publish docker image
         uses: docker/build-push-action@v4
         with:
