@@ -6,5 +6,5 @@ variable "DISCORD_SERVER_ID" {}
 variable "DISCORD_ROLE_ID" {}
 variable "IMAGES_DIRECTORY" {}
 variable "placenl_image" {
-  default = "ghcr.io/placenl/chief:0.1.0"
+  default = "ghcr.io/placenl/chief:0.1.1"
 }
