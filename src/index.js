@@ -43,6 +43,7 @@ app.use('/metrics', (await import('./metrics/index.js')).default);
 app.use('/oauth/login', (req, res) => {
     res.redirect(`https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${BASE_URL}/artist/createorder`)}&scope=identify+guilds.members.read&response_type=code`);
 });
+app.use('/template', (await import('./template/index.js')).default);
 app.use('/ws', (await import('./ws/index.js')).default);
 
 app.use('/orders', (req, res, next) => {

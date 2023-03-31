@@ -342,7 +342,7 @@ Acknowledges the client brand was updated. Sent after a serverbound `brand` mess
 
 ---
 
-### capabilityEnabled
+### enabledCapability
 
 Acknowledges a capability was enabled. Sent after a serverbound `enableCapability` message.
 
@@ -352,7 +352,7 @@ The capability that was enabled, as a string.
 
 ---
 
-### capabilityDisabled
+### disabledCapability
 
 Acknowledges a capability was disabled. Sent after a serverbound `disableCapability` message.
 
