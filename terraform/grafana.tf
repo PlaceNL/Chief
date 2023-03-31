@@ -50,7 +50,7 @@ resource "kubernetes_deployment" "grafana" {
           }
 
 
-          ports {
+          port {
             container_port = 3000
           }
         }
