@@ -62,6 +62,7 @@ resource "kubernetes_deployment" "grafana" {
 resource "kubernetes_service" "grafana" {
   metadata {
     name = "grafana"
+    namespace = kubernetes_namespace.placenl-namespace.metadata[0].name
   }
 
   spec {
@@ -73,8 +74,6 @@ resource "kubernetes_service" "grafana" {
       port = 80
       target_port = 3000
     }
-
-    type = "LoadBalancer"
   }
 }
 resource "kubectl_manifest" "grafana-ingress" {
