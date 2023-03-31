@@ -28,7 +28,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ghcr.io/placenl
+          images: ghcr.io/placenl/chief
       - name: publish docker image
         uses: docker/build-push-action@v4
         with:
