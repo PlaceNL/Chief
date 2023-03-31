@@ -2,9 +2,10 @@ name: Publish Docker Image
 permissions:
   contents: read
   packages: write
+
 on:
-  push:
-    branches: [ master ]
+  release:
+    types: [published]
 
 jobs:
   build:
@@ -23,8 +24,14 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract metadata (tags, labels) for Docker
+          id: meta
+          uses: docker/metadata-action@v4
+          with:
+            images: ghcr.io/placenl
       - name: publish docker image
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ghcr.io/placenl/chief
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
