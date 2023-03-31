@@ -12,7 +12,7 @@ metadata:
   namespace: placenl
 spec:
   rules:
-    - host: chief.placenl.nl
+    - host: placenl.goud.host
       http:
         paths:
           - backend:
@@ -20,9 +20,9 @@ spec:
                 name: grafana
                 port:
                   number: 80
-            path: /grafana
+            path: /
             pathType: Prefix
   tls:
     - hosts:
-        - chief.placenl.nl
-      secretName: placen-tls
+        - placenl.goud.host
+      secretName: placenl-grafana
