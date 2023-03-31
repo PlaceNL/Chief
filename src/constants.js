@@ -14,5 +14,4 @@ export const IMAGES_DIRECTORY = process.env.IMAGES_DIRECTORY ?? './images';
 export const KEEPALIVE_INTERVAL = parseInt(process.env.KEEPALIVE_INTERVAL ?? 5000);
 export const KEEPALIVE_TIMEOUT = parseInt(process.env.KEEPALIVE_TIMEOUT ?? 15000);
 export const POSTGRES_CONNECTION_URI = process.env.POSTGRES_CONNECTION_URI ?? 'postgres://chief:chief@localhost/chief';
-export const STATS_INTERVAL = parseInt(process.env.STATS_INTERVAL ?? 10000);
-
+export const STATS_INTERVAL = parseInt(process.env.STATS_INTERVAL ?? 2500);

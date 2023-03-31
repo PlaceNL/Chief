@@ -13,16 +13,16 @@ router.get('/osuplace', async (req, res) => {
     res.json({
         faction: FACTION_NAME,
         contact: FACTION_CONTACT,
-        templates: [
-            order ? {
+        templates: order ? [
+            {
                 name: order.message ?? 'Latest orders',
                 sources: [
                     `${BASE_URL}/orders/${order.id}.png`
                 ],
                 x: 0,
                 y: 0
-            } : undefined
-        ]
+            }
+        ] : []
     });
 });
 
