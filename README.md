@@ -1,21 +1,32 @@
-# PlaceNL Bot
+# Chief
 
-The PlaceNL bot is designed to help the PlaceNL community coordinate their efforts in the r/place project. It facilitates the organization and management of art templates and priority mappings, providing real-time updates to connected clients.
+Chief is a Command & Control server designed for coordinating r/Place efforts within the PlaceNL community. It streamlines the process of sharing pixel art templates and allows seamless integration with various clients, from simple overlays to automatic pixel placers.
 
-## Capabilities
+If you're interested in developing a client, refer to the [developer docs](docs/README.md) for detailed information.
 
-- Template management: The bot allows users to push and validate templates, ensuring that they are in the correct format and use valid colors.
-- Priority mapping: Users can upload priority maps along with their templates to indicate the importance of individual pixels in the artwork.
-- Discord integration: The bot verifies users through Discord, ensuring that only authorized users can push new orders.
-- WebSocket communication: The bot communicates with connected clients in real-time, sending updates whenever a new order is pushed.
-- Metrics collection: The bot collects metrics such as the number of WebSocket connections, messages sent, and brands, allowing for monitoring and analysis of the bot's performance.
+## Features
 
-## How it Works
+- Template Management: Chief allows pixel artists to easily push and validate templates, ensuring proper formatting, size, and color usage.
+- Priority Mapping: Users can upload priority maps along with their templates to indicate the importance of individual pixels within the artwork.
+- Discord Integration: Chief verifies users through Discord, allowing only authorized members with specific roles to push new orders.
+- WebSocket Communication: Real-time updates are sent to connected clients using WebSockets, ensuring that everyone stays informed about the latest orders.
+- Metrics Collection: Performance metrics, such as WebSocket connections, messages sent, and brands, are collected for monitoring and analysis purposes.
 
-1. Users upload a template (order) image and an optional priority mapping image.
-2. The bot validates the images, checking for correct format, size, and colors.
-3. If the validation is successful, the user's Discord identity is verified.
-4. If the user has the required role, the order is saved, and a notification is sent to all connected clients.
-5. Clients receive the order and can display the template and priority mapping to their users, helping the community to coordinate their efforts on the canvas.
+## Contributing
 
-Please note that the bot is designed to be used with the PlaceNL community, and its features are tailored to the specific needs of this group.
+We welcome meaningful contributions from everyone. For major changes, we recommend discussing your ideas in the English development channels within [our Discord server](https://l.placenl.nl/discord) prior to starting your work.
+
+When making changes to the protocol, please ensure that the documentation is updated accordingly.
+
+## Getting Started
+
+To get started with Chief, follow the steps below:
+
+1. Clone the repository and navigate to the project directory.
+2. Install the required dependencies using `npm install`.
+3. Set up the necessary environment variables, as described in the `.env.example` file.
+4. Start the server using `npm run start`.
+
+Once the server is running, you can begin creating clients and pushing templates to coordinate your efforts on r/Place.
+
+We hope you find Chief to be a valuable tool in enhancing your r/Place experience. For any questions or further assistance, don't hesitate to join [our Discord server](https://l.placenl.nl/discord).
