@@ -239,7 +239,7 @@ You have received a new order!
 | creator   | object? (see below) | The user that created this order, or null if the user wishes to remain anonymous.          |
 | images    | object (see below)  | The images related to this order                                                           |
 | size      | object (see below)  | The size of the images related to the order                                                |
-| offset    | object (see below)  | The offset on the canvas                                                                   |
+| offset    | object (see below)  | The offset of the image on the canvas                                                                   |
 
 ##### Creator Format
 
@@ -262,7 +262,7 @@ You have received a new order!
 | width  | integer | The width of the images in pixels  |
 | height | integer | The height of the images in pixels |
 
-#### Ofset Format
+##### Offset Format
 
 | name   | type    | description                              |
 |--------|---------|------------------------------------------|
