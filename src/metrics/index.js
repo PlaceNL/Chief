@@ -27,6 +27,13 @@ register.registerMetric(new client.Counter({
     }
 }));
 register.registerMetric(new client.Gauge({
+    name: 'valid_connections',
+    help: 'The amount of currently active connections that have sent at least one valid message to the websocket server on this instance',
+    collect() {
+        this.set([...chief.clients.values()].filter((client) => client.sentValidMessage).length);
+    }
+}));
+register.registerMetric(new client.Gauge({
     name: 'websocket_connections',
     help: 'The amount of currently active connections to the websocket server on this instance',
     collect() {

@@ -4,7 +4,8 @@ export function gatherStats(chief, complex) {
     const stats = {
         ...chief.stats,
         date: Date.now(),
-        activeConnections: chief.clients.size
+        activeConnections: [...chief.clients.values()].filter((client) => client.sentValidMessage).length,
+        socketConnections: chief.clients.size
     };
 
     if (complex) {

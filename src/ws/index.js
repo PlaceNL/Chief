@@ -20,7 +20,8 @@ router.ws('/', (ws) => {
         connectedAt: new Date(),
         lastKeepalive: new Date(),
         subscriptions: {},
-        capabilities: {}
+        capabilities: {},
+        sentValidMessage: false
     };
 
     attachSendFunctions(chief, ws);
@@ -62,6 +63,8 @@ router.ws('/', (ws) => {
             });
             return;
         }
+
+        client.sentValidMessage = true;
 
         switch (type) {
             case 'pong':
