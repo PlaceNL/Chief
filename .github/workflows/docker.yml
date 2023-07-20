@@ -4,8 +4,8 @@ permissions:
   packages: write
 
 on:
-  release:
-    types: [published]
+  push:
+    branches: [ master ]
 
 jobs:
   build:
@@ -24,14 +24,8 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ghcr.io/placenl/chief
       - name: publish docker image
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ghcr.io/placenl/chief:latest
