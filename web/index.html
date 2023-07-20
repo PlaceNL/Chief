@@ -187,7 +187,7 @@
     <hr/>
     <p class="card-text">${order.message ? cleanHTML(order.message) : '<span class="text-secondary">no description provided</span>'}</p>
     <a href="${cleanHTML(order.images.order)}" download class="btn btn-primary mt-1">Download image</a>
-    ${order.images.priority ? `<a href="${cleanHTML(order.images.order)}" download class="btn btn-secondary ml-1 mt-1">Download priority map</a>` : ''}
+    ${order.images.priority ? `<a href="${cleanHTML(order.images.priority)}" download class="btn btn-secondary ml-1 mt-1">Download priority map</a>` : ''}
     <div class="flex mt-2 text-secondary">
       ${order.creator ? `<img alt="Avatar" src="${cleanHTML(order.creator.avatar)}" class="rounded" width="32" height="32"> ${cleanHTML(order.creator.name)}` : 'anonymous artist'} - ${new Date(order.createdAt).toLocaleString()}
     </div>
