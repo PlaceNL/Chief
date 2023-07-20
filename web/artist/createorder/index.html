@@ -44,6 +44,18 @@
         </div>
 
         <div class="mb-3">
+            <label for="x-offset" class="form-label">Offset <small class="text-danger">*</small></label>
+            <div class="input-group">
+                <input type="number" class="form-control" id="x-offset" value=-500 required>
+                <span class="input-group-text">,</span>
+                <input type="number" class="form-control" id="y-offset" value=-500 required>
+            </div>
+            <div class="form-text">
+                0,0 on this image corresponds to the coordinates specified above on the canvas.
+            </div>
+        </div>
+
+        <div class="mb-3">
             <label for="message" class="form-label">Message</label>
             <textarea class="form-control" id="message" rows="2"></textarea>
             <div class="form-text">
@@ -130,6 +142,8 @@
         formData.append('priority', document.querySelector('#priority-mapping').files[0]);
         formData.append('message', document.querySelector('#message').value);
         formData.append('show-creator', document.querySelector('#show-creator').value);
+        formData.append('x-offset', document.querySelector('#x-offset').value);
+        formData.append('y-offset', document.querySelector('#y-offset').value);
         if (includeAuth) {
             formData.append('code', new URLSearchParams(window.location.search.slice(1)).get('code'));
         }

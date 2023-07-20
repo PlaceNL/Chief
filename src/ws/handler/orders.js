@@ -22,6 +22,11 @@ export async function handleGetOrder(chief, client) {
         width: order.width
     };
 
+    order.offset = {
+        x: order.offset_x,
+        y: order.offset_y
+    };
+
     order.createdAt = order.created_at;
 
     delete order.created_at;
@@ -29,6 +34,8 @@ export async function handleGetOrder(chief, client) {
     delete order.flags; // implementation detail
     delete order.height;
     delete order.width;
+    delete order.offset_x;
+    delete order.offset_y;
 
     client.ws.sendPayload('order', order);
 }

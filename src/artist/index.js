@@ -132,13 +132,16 @@ router.post('/order', upload.fields([{
         fs.copyFileSync(priority.path, path.join(IMAGES_DIRECTORY, `${id}-priority.png`));
     }
 
+    let xOffset = Number(req.body['x-offset']) || 0;
+    let yOffset = Number(req.body['y-offset']) || 0;
+
     await chief.sql`INSERT INTO users (id, name, avatar)
                     VALUES (${userData.id}, ${userData.username}, ${avatar})
                     ON CONFLICT (id) DO UPDATE SET name   = ${userData.username},
                                                    avatar = ${avatar};`;
-    await chief.sql`INSERT INTO orders (id, message, flags, width, height, created_by)
+    await chief.sql`INSERT INTO orders (id, message, flags, width, height, created_by, offset_x, offset_y)
                     VALUES (${id}, ${req.body.message || null}, ${flags}, ${orderPng.width}, ${orderPng.height},
-                            ${userData.id})`;
+                            ${userData.id}, ${xOffset}, ${yOffset})`;
 
     const payload = {
         id,
@@ -154,6 +157,10 @@ router.post('/order', upload.fields([{
         images: {
             order: `${BASE_URL}/orders/${id}.png`,
             priority: req.files.priority ? `${BASE_URL}/orders/${id}-priority.png` : null
+        },
+        offset: {
+            x: xOffset,
+            y: yOffset
         },
         createdAt: new Date()
     };
@@ -232,6 +239,13 @@ async function validate(req) {
         if (previousOrder.width !== orderPng.width || previousOrder.height !== orderPng.height) {
             perfect = false;
             messages.push(`Order has a different size than the current order (${orderPng.width}x${orderPng.height} new, ${previousOrder.width}x${previousOrder.height} old). If the canvas has been resized, you can ignore this warning.`);
+        }
+
+        let xOffset = Number(req.body['x-offset']) || 0;
+        let yOffset = Number(req.body['y-offset']) || 0;
+        if (previousOrder.offset_x !== xOffset || previousOrder.offset_y !== yOffset) {
+            perfect = false;
+            messages.push(`Order has a different offset than the current order (${xOffset},${yOffset} new, ${previousOrder.offset_x},${previousOrder.offset_y} old). If the canvas has been resized, you can ignore this warning.`);
         }
     }
 
