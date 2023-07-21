@@ -57,7 +57,7 @@ just subscribing to orders won't send the most recent orders.
 
 #### Payload
 
-*no payload*
+	*no payload*
 
 #### Response
 
@@ -239,6 +239,7 @@ You have received a new order!
 | creator   | object? (see below) | The user that created this order, or null if the user wishes to remain anonymous.          |
 | images    | object (see below)  | The images related to this order                                                           |
 | size      | object (see below)  | The size of the images related to the order                                                |
+| offset    | object (see below)  | The offset of the image on the canvas                                                      |
 
 ##### Creator Format
 
@@ -260,6 +261,14 @@ You have received a new order!
 |--------|---------|------------------------------------|
 | width  | integer | The width of the images in pixels  |
 | height | integer | The height of the images in pixels |
+
+##### Offset Format
+
+| name   | type    | description                              |
+|--------|---------|------------------------------------------|
+| x      | integer | The x offset of the image on the canvas  |
+| y      | integer | The y offset of the image on the canvas  |
+
 
 ---
 
@@ -296,18 +305,29 @@ a response to the `getStats` message.
 
 #### Payload
 
-| name              | type               | description                                                            |
-|-------------------|--------------------|------------------------------------------------------------------------|
-| activeConnections | integer            | The amount of websocket clients currently connected to this instance.  |
-| messageIn         | number             | The amount of incoming websocket messages this instance has processed. |
-| messagesOut       | number             | The amount of outgoing websocket messages this instance has sent.      |
+| name              | type    | description                                                            |
+| ----------------- | ------- | ---------------------------------------------------------------------- |
+| activeConnections | integer | The amount of websocket clients currently connected to this instance.  |
+| messagesIn        | integer | The amount of incoming websocket messages this instance has processed. |
+| messagesOut       | integer | The amount of outgoing websocket messages this instance has sent.      |
+| socketConnections | integer | The amount of socket connections currently connected to this instance  |
+| date              | integer | Number of seconds after 1-1-1970 (Unix timestamp)                      |
+| capabilities      | object (see below) | Stats about number of clients with enabled capabilities     | 
+
+##### Stats Capabilities Format
+
+| name     | type    | description                             |
+| -------- | ------- | --------------------------------------- |
+| place    | integer | n clients with place capability         |
+| placeNow | integer | n clients who just placed something     |
+| priority | integer | n clients who support priority mappings | 
+
 
 --- 
 
 ### capabilities
 
-Response to the `getCapabilities` message. Contains the capabilities this server supports, along with the capabilities
-your client has enabled.
+Response to the `getCapabilities` message. Contains the capabilities this server supports, along with the capabilities your client has enabled.
 
 #### Payload
 
