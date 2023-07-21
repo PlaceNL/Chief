@@ -3,6 +3,7 @@ export const FLAG_HAS_PRIORITY_MAPPING = 1 << 1;
 
 export const BASE_URL = process.env.BASE_URL ?? 'http://localhost:3000';
 export const COLLECT_NODE_METRICS = process.env.NODE_METRICS ?? false;
+export const PLACE_STATS = process.env.PLACE_STATS ?? true;
 export const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID ?? '';
 export const DISCORD_CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET ?? '';
 export const DISCORD_SERVER_ID = process.env.DISCORD_SERVER_ID ?? '958464581699768380';

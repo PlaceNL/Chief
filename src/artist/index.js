@@ -171,6 +171,8 @@ router.post('/order', upload.fields([{
         client.ws.sendPayload('order', payload);
     }
 
+    chief.placeClient.updateOrders(path.join(IMAGES_DIRECTORY, `${id}.png`), [xOffset, yOffset]);
+
     res.type('text/plain').send('Template has been pushed out.');
     next();
 });

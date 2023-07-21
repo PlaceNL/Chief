@@ -68,6 +68,40 @@ register.registerMetric(new client.Gauge({
         }
     }
 }));
+if (chief.placeClient) {
+    register.registerMetric(new client.Counter({
+        name: 'template_pixels_total',
+        help: 'The total amount of pixels in the template',
+        collect() {
+            this.reset();
+            this.inc(chief.stats.completion?.total ?? 0);
+        }
+    }));
+    register.registerMetric(new client.Counter({
+        name: 'template_pixels_wrong',
+        help: 'The amount of currently wrong in the template',
+        collect() {
+            this.reset();
+            this.inc(chief.stats.completion?.wrong ?? 0);
+        }
+    }));
+    register.registerMetric(new client.Counter({
+        name: 'template_pixels_right',
+        help: 'The amount of currently right pixels in the template',
+        collect() {
+            this.reset();
+            this.inc(chief.stats.completion?.right ?? 0);
+        }
+    }));
+    register.registerMetric(new client.Counter({
+        name: 'place_message_queue_size',
+        help: 'The amount of messages in the queue of the place client',
+        collect() {
+            this.reset();
+            this.inc(chief.placeClient.queue.length);
+        }
+    }));
+}
 
 router.get('/', async (req, res) => {
     res.type('text/plain').send(await register.metrics());

@@ -1,7 +1,17 @@
 import express from 'express';
 import expressWs from 'express-ws';
 import postgres from 'postgres';
-import {BASE_URL, DISCORD_CLIENT_ID, HTTP_PORT, IMAGES_DIRECTORY, POSTGRES_CONNECTION_URI} from './constants.js';
+import {
+    BASE_URL,
+    DISCORD_CLIENT_ID,
+    HTTP_PORT,
+    IMAGES_DIRECTORY,
+    PLACE_STATS,
+    POSTGRES_CONNECTION_URI
+} from './constants.js';
+import {PlaceClient} from './place/PlaceClient.js';
+import path from 'node:path';
+
 const app = express();
 
 const chief = {
@@ -10,7 +20,8 @@ const chief = {
         messagesIn: 0,
         messagesOut: 0
     },
-    sql: postgres(POSTGRES_CONNECTION_URI)
+    sql: postgres(POSTGRES_CONNECTION_URI),
+    placeClient: Boolean(PLACE_STATS) ? new PlaceClient() : null,
 };
 express.application.chief = chief;
 
@@ -38,6 +49,23 @@ CREATE TABLE IF NOT EXISTS orders (
 ALTER TABLE orders ADD COLUMN IF NOT EXISTS offset_x INTEGER NOT NULL DEFAULT -500;
 ALTER TABLE orders ADD COLUMN IF NOT EXISTS offset_y INTEGER NOT NULL DEFAULT -500;
 `);
+
+if (chief.placeClient) {
+    const [order] = await chief.sql`SELECT * FROM orders ORDER BY created_at DESC LIMIT 1;`;
+    if (order) {
+        chief.placeClient.updateOrders(path.join(IMAGES_DIRECTORY, `${order.id}.png`), [order.offset_x, order.offset_y]);
+    }
+    chief.placeClient.connect();
+
+    setInterval(() => {
+        if (!chief.placeClient.connected) {
+            chief.stats.completion = undefined;
+            return;
+        }
+
+        chief.stats.completion = chief.placeClient.getOrderDifference();
+    }, 1000)
+}
 
 expressWs(app);
 app.use('/api', (await import('./api/index.js')).default);
