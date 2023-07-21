@@ -229,22 +229,38 @@
     }
 
     function buildOrderHistory() {
-        let html = '';
-        for (const order of orderHistory) {
-            html += `<div class="card mb-2">
-  <img alt="Order" src="${cleanHTML(order.images.order)}" class="card-img-top" width="${order.size.width}">
-  <div class="card-body">
-    <hr/>
-    <p class="card-text">${order.message ? cleanHTML(order.message) : '<span class="text-secondary">no description provided</span>'}</p>
-    <a href="${cleanHTML(order.images.order)}" download class="btn btn-primary mt-1">Download image</a>
-    ${order.images.priority ? `<a href="${cleanHTML(order.images.priority)}" download class="btn btn-secondary ml-1 mt-1">Download priority map</a>` : ''}
-    <div class="flex mt-2 text-secondary">
-      ${order.creator ? `<img alt="Avatar" src="${cleanHTML(order.creator.avatar)}" class="rounded" width="32" height="32"> ${cleanHTML(order.creator.name)}` : 'anonymous artist'} - ${new Date(order.createdAt).toLocaleString()}
-    </div>
-  </div>
-</div>`;
+        const orderHistoryContainer = document.querySelector('#order-history');
+        orderHistoryContainer.innerHTML = '';
+
+        const html = orderHistory.map((order) => {
+            const defaultImageSrc = cleanHTML(order.images.order);
+
+            return `
+            <div class="card mb-2">
+                <img alt="Order" src="${defaultImageSrc}" class="card-img-top" width="${order.size.width}" data-default-src="${defaultImageSrc}">
+                <div class="card-body">
+                    <hr/>
+                    <p class="card-text">${order.message ? cleanHTML(order.message) : '<span class="text-secondary">no description provided</span>'}</p>
+                    <a href="${defaultImageSrc}" download class="btn btn-primary mt-1">Download image</a>
+                    ${order.images.priority ? `<a href="${cleanHTML(order.images.priority)}" download class="btn btn-secondary ml-1 mt-1 download-priority-btn">Download priority map</a>` : ''}
+                    <div class="flex mt-2 text-secondary">
+                        ${order.creator ? `<img alt="Avatar" src="${cleanHTML(order.creator.avatar)}" class="rounded" width="32" height="32"> ${cleanHTML(order.creator.name)}` : 'anonymous artist'} - ${new Date(order.createdAt).toLocaleString()}
+                    </div>
+                </div>
+            </div>
+            `;
+        }).join('');
+
+        orderHistoryContainer.innerHTML = html;
+
+        orderHistoryContainer.addEventListener('mouseover', handleHover);
+
+        function handleHover(event) {
+            const card = event.target.closest('.card');
+            const cardImage = card.querySelector('.card-img-top');
+            const priorityButton = card.querySelector('.download-priority-btn');
+            cardImage.src = event.target == priorityButton ? priorityButton.href : cardImage.dataset.defaultSrc;
         }
-        document.querySelector('#order-history').innerHTML = html;
     }
 
     (async function () {
