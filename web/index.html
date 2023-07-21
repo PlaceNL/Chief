@@ -24,6 +24,7 @@
             <h2 class="text-secondary">active connections</h2>
             <h3 class="text-secondary">(<span id="place-capable" class="odometer text-light">0</span> capable of placing pixels)
             </h3>
+            <h3 class="text-secondary">(<span id="pixels-per-minute" class="odometer text-light">0</span> pixels/min)</h3>
         </div>
         <hr/>
         <div id="order-history" class="ps-5 pe-5">
@@ -133,6 +134,7 @@
                     case 'stats':
                         document.querySelector('#connections').innerText = payload.activeConnections;
                         document.querySelector('#place-capable').innerText = payload.capabilities.place;
+                        document.querySelector('#pixels-per-minute').innerText = Math.round(payload.capabilities.place/5);
                         break;
 
                     case 'ping':
