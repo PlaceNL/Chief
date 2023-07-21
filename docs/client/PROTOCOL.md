@@ -305,18 +305,29 @@ a response to the `getStats` message.
 
 #### Payload
 
-| name              | type               | description                                                            |
-|-------------------|--------------------|------------------------------------------------------------------------|
-| activeConnections | integer            | The amount of websocket clients currently connected to this instance.  |
-| messageIn         | number             | The amount of incoming websocket messages this instance has processed. |
-| messagesOut       | number             | The amount of outgoing websocket messages this instance has sent.      |
+| name              | type    | description                                                            |
+| ----------------- | ------- | ---------------------------------------------------------------------- |
+| activeConnections | integer | The amount of websocket clients currently connected to this instance.  |
+| messagesIn        | integer | The amount of incoming websocket messages this instance has processed. |
+| messagesOut       | integer | The amount of outgoing websocket messages this instance has sent.      |
+| socketConnections | integer | The amount of socket connections currently connected to this instance  |
+| date              | integer | Number of seconds after 1-1-1970 (Unix timestamp)                      |
+| capabilities      | object (see below) | Stats about number of clients with enabled capabilities     | 
+
+##### Stats Capabilities Format
+
+| name     | type    | description                             |
+| -------- | ------- | --------------------------------------- |
+| place    | integer | n clients with place capability         |
+| placeNow | integer | n clients who just placed something     |
+| priority | integer | n clients who support priority mappings | 
+
 
 --- 
 
 ### capabilities
 
-Response to the `getCapabilities` message. Contains the capabilities this server supports, along with the capabilities
-your client has enabled.
+Response to the `getCapabilities` message. Contains the capabilities this server supports, along with the capabilities your client has enabled.
 
 #### Payload
 
