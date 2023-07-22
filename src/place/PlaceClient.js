@@ -1,7 +1,7 @@
 import {WebSocket} from 'ws';
 import {createCanvas, loadImage} from 'canvas';
 
-const trackedCanvases = [1, 2, 4, 5];
+const trackedCanvases = [0, 1, 2, 3, 4, 5];
 const canvasPositions = [[0, 0], [1000, 0], [2000, 0], [0, 1000], [1000, 1000], [2000, 1000]];
 
 export class PlaceClient {
@@ -68,6 +68,10 @@ export class PlaceClient {
             console.log('Disconnected from place, reconnecting...');
             this.connected = false;
             setTimeout(() => this.connect(), 1000);
+        });
+
+        ws.on('error', () => {
+            ws.close();
         });
 
         while (ws.readyState !== WebSocket.CLOSED) {

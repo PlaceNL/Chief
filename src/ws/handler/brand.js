@@ -19,6 +19,7 @@ export function handleBrand(client, payload) {
             type: 'invalidPayload',
             detail: 'invalidBrand'
         });
+        return;
     }
 
     client.brand = {
