@@ -21,7 +21,7 @@ const chief = {
         messagesOut: 0
     },
     sql: postgres(POSTGRES_CONNECTION_URI),
-    placeClient: Boolean(PLACE_STATS) ? new PlaceClient() : null,
+    placeClient: PLACE_STATS ? new PlaceClient() : null,
 };
 express.application.chief = chief;
 

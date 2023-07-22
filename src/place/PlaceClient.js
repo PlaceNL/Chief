@@ -71,7 +71,7 @@ export class PlaceClient {
             setTimeout(() => this.connect(), 1000);
         });
 
-        ws.on('error', () => {
+        ws.on('error', (e) => {
             ws.close();
         });
 
@@ -115,6 +115,12 @@ export class PlaceClient {
             }
         });
         const body = await response.text();
+
+        if (!body.includes('<script id="data">window.___r = ')) {
+            console.log('Failed to get access token from reddit, retrying...');
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            return this.getAccessToken();
+        }
 
         // todo: yuck
         const configRaw = body.split('<script id="data">window.___r = ')[1].split(';</script>')[0];

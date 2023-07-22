@@ -9,7 +9,7 @@ const router = new Router();
 
 const register = new client.Registry();
 
-if (Boolean(COLLECT_NODE_METRICS)) client.collectDefaultMetrics({register});
+if (COLLECT_NODE_METRICS) client.collectDefaultMetrics({register});
 register.registerMetric(new client.Counter({
     name: 'websocket_messages_in_total',
     help: 'The amount of messages sent to the websocket server on this instance',
