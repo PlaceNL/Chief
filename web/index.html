@@ -175,12 +175,20 @@
 
                         if (payload.completion) {
                             document.querySelector('#completion-stat').classList.remove('d-none');
-                            document.querySelector('#time-left').classList.remove('d-none');
-                            
-                            const timeLeft = payload.completion.wrong / (payload.capabilities.place / 5);
-                            document.querySelector('#time-hours-left').innerText = Math.floor(timeLeft / 60);
-                            document.querySelector('#time-minutes-left').innerText = Math.floor(timeLeft % 60);
 
+                            const timeLeft = (payload.completion.wrong && payload.capabilities.place) ? payload.completion.wrong / (payload.capabilities.place / 5) : 0;
+                            var hoursLeft = 0;
+                            var minutesLeft = 0;
+                            if (timeLeft <= 0) {
+                                document.querySelector('#time-left').classList.add('d-none');
+                            } else {
+                                document.querySelector('#time-left').classList.remove('d-none');
+                                hoursLeft = Math.floor(timeLeft / 60);
+                                minutesLeft = Math.floor(timeLeft % 60);
+                            }
+                            document.querySelector('#time-hours-left').innerText = hoursLeft;
+                            document.querySelector('#time-minutes-left').innerText = minutesLeft;
+                            
                             const percentageWrong = payload.completion.wrong / payload.completion.total * 100;
                             const percentageRight = 100 - percentageWrong;
 
