@@ -42,6 +42,10 @@
                         <h1 class="fs-1 text-light"><span id="pixels-per-minute" class="odometer">0</span> pixels/min
                         </h1>
                         <h4 class="text-secondary">estimated place rate</h4>
+                        <h6 id="time-left" class="text-secondary">(<span id="time-hours-left"
+                            class="odometer text-light">0</span> hour(s) and
+<span id="time-minutes-left" class="odometer text-light">0</span> minute(s) <!--and 
+<span id="time-seconds-left" class="odometer text-light">0</span> seconds(s) -->left until completion at this pace.)</h6>
                     </div>
                 </div>
             </div>
@@ -169,6 +173,11 @@
                         document.querySelector('#connections').innerText = payload.activeConnections;
                         document.querySelector('#place-capable').innerText = payload.capabilities.place;
                         document.querySelector('#pixels-per-minute').innerText = Math.round(payload.capabilities.place / 5);
+
+                        const timeLeft = payload.completion.wrong / (payload.capabilities.place / 5);
+                        document.querySelector('#time-hours-left').innerText = Math.floor(timeLeft / 60);
+                        document.querySelector('#time-minutes-left').innerText = Math.floor(timeLeft % 60);
+                        //document.querySelector('#time-seconds-left').innerText = Math.floor((timeLeft % 1) * 60);
 
                         if (payload.completion) {
                             document.querySelector('#completion-stat').classList.remove('d-none');
