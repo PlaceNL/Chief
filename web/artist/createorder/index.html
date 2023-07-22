@@ -3,153 +3,21 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Create Order - Chief</title>
+    <title>Signed in - Chief</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
 </head>
 <body>
 <div class="container mt-3">
-    <h1>Create new order</h1>
-
-    <noscript>
-        <div class="alert alert-danger" role="alert">
-            JavaScript is <b>required</b> to post new orders.
-        </div>
-    </noscript>
-    <div class="alert alert-warning" role="alert">
-        Please note that your Discord authentication will be verified <b>after</b> you submit the new order.
-    </div>
-
-    <div class="alert d-none" role="alert" id="feedback">
-        <div id="feedback-text"></div>
-        <ul id="feedback-messages"></ul>
-        <button class="btn btn-outline-warning mt-3" type="submit" id="push-button">Push new order</button>
-    </div>
-
-    <div class="d-flex justify-content-center d-none" id="spinner">
-        <div class="spinner-border" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </div>
-
-    <form id="form">
-        <div class="mb-3">
-            <label for="order" class="form-label">Order file <small class="text-danger">*</small></label>
-            <input class="form-control" type="file" id="order" required accept="image/png">
-        </div>
-
-        <div class="mb-3">
-            <label for="priority-mapping" class="form-label">Priority mapping file</label>
-            <input class="form-control" type="file" id="priority-mapping" accept="image/png">
-        </div>
-
-        <div class="mb-3">
-            <label for="x-offset" class="form-label">Offset <small class="text-danger">*</small></label>
-            <div class="input-group">
-                <input type="number" class="form-control" id="x-offset" value=-1000 required>
-                <span class="input-group-text">,</span>
-                <input type="number" class="form-control" id="y-offset" value=-500 required>
-            </div>
-            <div class="form-text">
-                0,0 on this image corresponds to the coordinates specified above on the canvas.
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <label for="message" class="form-label">Message</label>
-            <textarea class="form-control" id="message" rows="2"></textarea>
-            <div class="form-text">
-                Describe the changes you've made since the last order. Try to keep this message as short as possible.
-            </div>
-        </div>
-
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="show-creator" checked>
-            <label class="form-check-label" for="show-creator">Show me as the artist for this order</label>
-            <div class="form-text">
-                To remain transparent to your community, you should probably leave this option enabled.
-                When this option is disabled, the artist will be displayed as <i>Anonymous Artist</i>.
-            </div>
-        </div>
-
-        <button class="btn btn-primary mt-3" type="submit" id="validate-button">Validate</button>
-    </form>
+    <h1>Thank you for signing in!</h1>
+    <p>You may now close this tab.</p>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
         crossorigin="anonymous"></script>
 <script>
-    document.querySelector('#form').onsubmit = async (e) => {
-        e.preventDefault();
-        document.querySelector('#form').classList.add('d-none');
-        document.querySelector('#feedback').classList.add('d-none');
-        document.querySelector('#spinner').classList.remove('d-none');
-
-        const response = await fetch('/artist/validate', {
-            method: 'POST',
-            body: buildFormData()
-        });
-        const data = await response.json();
-
-        document.querySelector('#spinner').classList.add('d-none');
-        document.querySelector('#form').classList.remove('d-none');
-        document.querySelector('#feedback').classList.remove('d-none');
-        document.querySelector('#feedback').classList.remove('alert-success', 'alert-warning', 'alert-danger', 'd-none');
-        Array.from(document.querySelector('#feedback-messages').children).forEach((child) => child.remove());
-
-        document.querySelector('#push-button').classList.remove('d-none');
-
-        if (data.score === 2) { // perfect
-            document.querySelector('#feedback').classList.add('alert-success');
-            document.querySelector('#feedback-text').innerText = 'This order is completely valid. Click the button below to push it.';
-        } else if (data.score === 1) { // acceptable
-            document.querySelector('#feedback').classList.add('alert-warning');
-            document.querySelector('#feedback-text').innerText = 'This order contains one or more warnings, but can be pushed without resolving them by clicking the button below.';
-        } else {
-            document.querySelector('#feedback').classList.add('alert-danger');
-            document.querySelector('#push-button').classList.add('d-none');
-            document.querySelector('#feedback-text').innerText = 'This order contains one or more errors and cannot be pushed before they are resolved.';
-        }
-
-        if (data.messages) {
-            for (const message of data.messages) {
-                const node = document.createElement('li');
-                node.innerText = message;
-                document.querySelector('#feedback-messages').appendChild(node);
-            }
-        }
-    };
-
-    document.querySelector('#push-button').onclick = async (e) => {
-        e.preventDefault();
-
-        document.querySelector('#form').classList.add('d-none');
-        document.querySelector('#feedback').classList.add('d-none');
-        document.querySelector('#spinner').classList.remove('d-none');
-
-        const response = await fetch('/artist/order', {
-            method: 'POST',
-            body: buildFormData(true)
-        });
-        alert(await response.text());
-        window.location = '/';
-    };
-
-    function buildFormData(includeAuth = false) {
-        const formData = new FormData();
-
-        formData.append('order', document.querySelector('#order').files[0]);
-        formData.append('priority', document.querySelector('#priority-mapping').files[0]);
-        formData.append('message', document.querySelector('#message').value);
-        formData.append('show-creator', document.querySelector('#show-creator').value);
-        formData.append('x-offset', document.querySelector('#x-offset').value);
-        formData.append('y-offset', document.querySelector('#y-offset').value);
-        if (includeAuth) {
-            formData.append('code', new URLSearchParams(window.location.search.slice(1)).get('code'));
-        }
-
-        return formData;
-    }
+    localStorage.setItem('authenticationCode', new URLSearchParams(window.location.search).get('code'));
+    window.close();
 </script>
 </body>
 </html>

@@ -46,6 +46,7 @@ export class PlaceClient {
         }
 
         ws.on('open', () => {
+            console.log('Connected to r/place!');
             this.connected = true;
             ws.send(JSON.stringify({
                 type: 'connection_init',
