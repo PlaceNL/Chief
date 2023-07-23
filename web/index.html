@@ -41,7 +41,7 @@
                     <div class="card-body">
                         <h1 class="fs-1 text-light"><span id="pixels-per-minute" class="odometer">0</span> pixels/min
                         </h1>
-                        <h4 class="text-secondary">estimated place rate</h4>
+                        <h4 class="text-secondary">average place rate</h4>
                         <h6 id="time-left" class="text-secondary d-none">(<span id="time-hours-left"
                                                                                 class="odometer text-light">0</span>
                             hour<span id="time-hours-left-plural">s</span> and
@@ -173,12 +173,14 @@
                     case 'stats':
                         document.querySelector('#connections').innerText = payload.activeConnections;
                         document.querySelector('#place-capable').innerText = payload.capabilities.place;
-                        document.querySelector('#pixels-per-minute').innerText = Math.round(payload.capabilities.place / 5);
+                        document.querySelector('#pixels-per-minute').innerText =
+                            payload.averagePlaceRatePerMinute < 10 ? payload.averagePlaceRatePerMinute.toFixed(2) :
+                                (payload.averagePlaceRatePerMinute < 100 ? payload.averagePlaceRatePerMinute.toFixed(1) : payload.averagePlaceRatePerMinute.toFixed(0));
 
                         if (payload.completion) {
                             document.querySelector('#completion-stat').classList.remove('d-none');
 
-                            const timeLeft = (payload.completion.wrong && payload.capabilities.place) ? payload.completion.wrong / (payload.capabilities.place / 5) : 0;
+                            const timeLeft = (payload.completion.wrong && payload.capabilities.place) ? payload.completion.wrong / (payload.averagePlaceRatePerMinute) : 0;
                             let hoursLeft = 0;
                             let minutesLeft = 0;
                             if (timeLeft <= 0) {

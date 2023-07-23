@@ -12,6 +12,12 @@ export function gatherStats(chief, complex) {
         stats.brands = gatherBrandsStats(chief);
     }
 
+    let placeRate = 0;
+    for (let i = 1; i < chief.placeCounts.length; i++) {
+        placeRate += chief.placeCounts[i];
+    }
+    stats.averagePlaceRatePerMinute = placeRate / (chief.placeCounts.length - 1);
+
     stats.capabilities = gatherCapabilitiesStats(chief);
 
     return stats;

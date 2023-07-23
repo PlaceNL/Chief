@@ -9,6 +9,7 @@ import {handleDisableCapability, handleEnableCapability, handleGetCapabilities} 
 import {handleGetOrder} from './handler/orders.js';
 import {KEEPALIVE_INTERVAL, KEEPALIVE_TIMEOUT, STATS_INTERVAL} from '../constants.js';
 import {handleGetStats} from './handler/stats.js';
+import {handlePlace} from './handler/place.js';
 
 const {chief} = application;
 const router = new Router();
@@ -19,6 +20,7 @@ router.ws('/', (ws) => {
         id: crypto.randomUUID(),
         connectedAt: new Date(),
         lastKeepalive: new Date(),
+        lastPlaced: new Date(0),
         subscriptions: {},
         capabilities: {},
         sentValidMessage: false
@@ -77,6 +79,10 @@ router.ws('/', (ws) => {
 
             case 'brand':
                 handleBrand(client, payload);
+                break;
+
+            case 'place':
+                handlePlace(chief, client, payload);
                 break;
 
             case 'getOrder':

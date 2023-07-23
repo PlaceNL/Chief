@@ -68,6 +68,17 @@ register.registerMetric(new client.Gauge({
         }
     }
 }));
+register.registerMetric(new client.Gauge({
+    name: 'average_place_rate',
+    help: 'The average amount of pixels being placed per minute by clients on this instance',
+    collect() {
+        let placeRate = 0;
+        for (let i = 1; i < chief.placeCounts.length; i++) {
+            placeRate += chief.placeCounts[i];
+        }
+        this.set(placeRate / (chief.placeCounts.length - 1));
+    }
+}));
 if (chief.placeClient) {
     register.registerMetric(new client.Counter({
         name: 'template_pixels_total',
