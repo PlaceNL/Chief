@@ -42,6 +42,9 @@
                         <h1 class="fs-1 text-light"><span id="pixels-per-minute" class="odometer">0</span> pixels/min
                         </h1>
                         <h4 class="text-secondary">estimated place rate</h4>
+                        <h6 id="time-left" class="text-secondary d-none">(<span id="time-hours-left"
+                            class="odometer text-light">0</span> hour(s) and
+                        <span id="time-minutes-left" class="odometer text-light">0</span> minute(s) left until completion at this pace.)</h6>
                     </div>
                 </div>
             </div>
@@ -173,6 +176,19 @@
                         if (payload.completion) {
                             document.querySelector('#completion-stat').classList.remove('d-none');
 
+                            const timeLeft = (payload.completion.wrong && payload.capabilities.place) ? payload.completion.wrong / (payload.capabilities.place / 5) : 0;
+                            var hoursLeft = 0;
+                            var minutesLeft = 0;
+                            if (timeLeft <= 0) {
+                                document.querySelector('#time-left').classList.add('d-none');
+                            } else {
+                                document.querySelector('#time-left').classList.remove('d-none');
+                                hoursLeft = Math.floor(timeLeft / 60);
+                                minutesLeft = Math.floor(timeLeft % 60);
+                            }
+                            document.querySelector('#time-hours-left').innerText = hoursLeft;
+                            document.querySelector('#time-minutes-left').innerText = minutesLeft;
+                            
                             const percentageWrong = payload.completion.wrong / payload.completion.total * 100;
                             const percentageRight = 100 - percentageWrong;
 
@@ -181,6 +197,7 @@
                             document.querySelector('#template-pixel-count').innerText = payload.completion.total;
                         } else {
                             document.querySelector('#completion-stat').classList.add('d-none');
+                            document.querySelector('#time-left').classList.add('d-none')
                         }
 
                         break;
