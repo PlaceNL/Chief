@@ -31,6 +31,10 @@ router.ws('/', (ws) => {
         chief.clients.delete(client.id);
     });
 
+    ws.on('error', (e) => {
+        ws.close();
+    });
+
     ws.on('message', (rawMessage) => {
         chief.stats.messagesIn++;
         if (rawMessage.length === 0 || rawMessage.length > 8192) {
