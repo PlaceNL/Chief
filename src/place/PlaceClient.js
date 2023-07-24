@@ -108,12 +108,16 @@ export class PlaceClient {
     }
 
     async getAccessToken() {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30_000);
         const response = await fetch('https://reddit.com/r/place', {
             headers: {
                 Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
                 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/116.0'
-            }
+            },
+            signal: controller.signal
         });
+        clearTimeout(timeoutId);
         const body = await response.text();
 
         if (!body.includes('<script id="data">window.___r = ')) {
