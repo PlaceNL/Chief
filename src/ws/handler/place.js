@@ -24,6 +24,14 @@ export function handlePlace(chief, client, payload) {
         return;
     }
 
+    if (!client.brand) {
+        client.ws.sendPayload('error', {
+            type: 'brandRequired',
+            detail: 'place'
+        });
+        return;
+    }
+
     client.lastPlaced = new Date();
     chief.placeCounts[0]++;
 
