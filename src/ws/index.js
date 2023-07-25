@@ -127,6 +127,12 @@ router.ws('/', (ws) => {
         keepaliveInterval: KEEPALIVE_INTERVAL,
         keepaliveTimeout: KEEPALIVE_TIMEOUT
     });
+
+    ws.sendPayload('announcement', {
+        important: true,
+        showFor: 24 * 60 * 60 * 1000,
+        message: 'Bedankt voor je hulp dit jaar. Tot volgend jaar! ❤️🫡\n\nThanks for your help this year. See you next year! ❤️🫡'
+    });
 });
 
 startKeepaliveCheck(chief, KEEPALIVE_INTERVAL, KEEPALIVE_TIMEOUT);
