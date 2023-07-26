@@ -53,7 +53,7 @@ router.get('/orders', async (req, res) => {
 
 router.get('/order', async (req, res) => {
     const orders = await chief.sql`SELECT * FROM orders ORDER BY created_at DESC LIMIT 1;`;
-    const order = orders[1]
+    const order = orders[0]
 
     if ((order.flags & FLAG_SHOW_CREATOR) !== 0) {
         [order.creator] = await chief.sql`SELECT *
